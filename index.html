@@ -7123,6 +7123,40 @@ function jsrShowPendingModal(){
   m.onclick=ev=>{ if(ev.target===m) m.style.display='none'; };
 }
 
+// يحسب مكوّنات الراتب بالبحث في الكائن وكل الكائنات/المصفوفات المتداخلة
+function _jsrSalaryNums(e){
+  const num = v => { if(v==null||typeof v==='boolean') return 0; const n=parseFloat(String(v).replace(/[^0-9.\-]/g,'')); return isNaN(n)?0:n; };
+  const lbl = { basic_salary:'الأساسي', basic:'الأساسي', housing_allowance:'بدل سكن', transportation_allowance:'بدل نقل', transport_allowance:'بدل نقل', food_allowance:'بدل طعام', mobile_allowance:'بدل جوال', phone_allowance:'بدل هاتف', other_allowance:'بدلات أخرى', other_allowances:'بدلات أخرى', other_earnings:'بدلات أخرى' };
+  let basic=0, allow=0, total=0; const parts=[]; const seen=new Set();
+  (function scan(o,depth){
+    if(!o||typeof o!=='object'||depth>4) return;
+    Object.keys(o).forEach(k=>{
+      const v=o[k];
+      if(v&&typeof v==='object'){ scan(v,depth+1); return; }
+      const n=num(v);
+      if(/^(basic_salary|basic|basic_wage)$/i.test(k)){ if(n>basic) basic=n; }
+      else if(/(total_salary|gross_salary|net_salary|total_package|total_pay|gross_pay|full_salary|إجمالي|الاجمالي)/i.test(k)){ if(n>total) total=n; }
+      else if(/allowance|housing|transport|earning|بدل|سكن|نقل|طعام|مواصلات/i.test(k)){
+        if(n>0){ const key=k+'|'+n; if(!seen.has(key)){ seen.add(key); allow+=n; parts.push([lbl[k]||k.replace(/_/g,' '), n]); } }
+      }
+    });
+  })(e,0);
+  if(!total) total = basic + allow;
+  return { basic, allow, parts, total };
+}
+function _jsrSalaryHTML(e){
+  const s=_jsrSalaryNums(e); if(!(s.total>0)) return '';
+  const fmt=n=>Math.round(n).toLocaleString('en-US')+' ر.س';
+  return `<div style="background:linear-gradient(160deg,rgba(34,197,94,.12),rgba(34,197,94,.03));border:1px solid rgba(34,197,94,.4);border-radius:12px;padding:14px 16px;margin-bottom:14px">
+      <div style="font-size:.72rem;color:#6b7fa3;font-weight:600;margin-bottom:4px">💰 إجمالي الراتب (شامل البدلات)</div>
+      <div style="font-size:1.5rem;font-weight:800;color:#22c55e">${fmt(s.total)}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">
+        ${s.basic>0?`<span style="background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:3px 9px;font-size:.72rem;color:#cbd5e1">الأساسي: ${fmt(s.basic)}</span>`:''}
+        ${s.parts.map(p=>`<span style="background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:3px 9px;font-size:.72rem;color:#a0aec0">${p[0]}: ${fmt(p[1])}</span>`).join('')}
+      </div>
+    </div>`;
+}
+
 // عرض كل تفاصيل الموظف من نظام جسر عند الضغط عليه
 function jsrShowEmpDetails(code){
   const e = (window._jsrEmpFullByCode||{})[String(code)];
@@ -7164,31 +7198,7 @@ function jsrShowEmpDetails(code){
   const name = e.full_name_ar||e.full_name_en||e.full_name||e.name_ar||e.name_en||'—';
   const titleTxt = (e.job_title&&(e.job_title.name_ar||e.job_title.name_en))||e.position||'';
   const deptTxt = (e.department&&(e.department.name_ar||e.department.name_en))||'';
-  // حساب إجمالي الراتب: الأساسي + كل البدلات (يلتقط أي حقل بدل تلقائياً)
-  const _num = v => { if(v==null) return 0; const n=parseFloat(String(v).replace(/[^0-9.\-]/g,'')); return isNaN(n)?0:n; };
-  const _lbl = { basic_salary:'الأساسي', housing_allowance:'بدل سكن', transportation_allowance:'بدل نقل', transport_allowance:'بدل نقل', food_allowance:'بدل طعام', mobile_allowance:'بدل جوال', phone_allowance:'بدل هاتف', other_allowance:'بدلات أخرى', other_allowances:'بدلات أخرى' };
-  const _basic = _num(e.basic_salary)||_num(e.basic)||_num(e.salary);
-  // اجمع كل حقول البدلات (أي مفتاح فيه allowance/بدل/سكن/نقل/طعام... بقيمة رقمية)
-  let _allow=0; const _parts=[];
-  Object.keys(e).forEach(k=>{
-    if(k==='basic_salary'||k==='basic'||k==='salary'||/total|gross|net/i.test(k)) return;
-    if(/allowance|housing|transport|earning|بدل|سكن|نقل|طعام|مواصلات/i.test(k)){
-      const v=_num(e[k]); if(v>0){ _allow+=v; _parts.push([_lbl[k]||k.replace(/_/g,' '), v]); }
-    }
-  });
-  // استخدم إجمالي جسر الجاهز إن وُجد، وإلا اجمع الأساسي + البدلات
-  let _total = _num(e.total_salary)||_num(e.gross_salary)||_num(e.net_salary)||_num(e.total_package)||_num(e.monthly_salary);
-  if(!_total) _total = _basic + _allow;
-  const _fmt=n=>Math.round(n).toLocaleString('en-US')+' ر.س';
-  const salaryBlock = _total>0 ? `
-    <div style="background:linear-gradient(160deg,rgba(34,197,94,.12),rgba(34,197,94,.03));border:1px solid rgba(34,197,94,.4);border-radius:12px;padding:14px 16px;margin-bottom:14px">
-      <div style="font-size:.72rem;color:#6b7fa3;font-weight:600;margin-bottom:4px">💰 إجمالي الراتب (شامل البدلات)</div>
-      <div style="font-size:1.5rem;font-weight:800;color:#22c55e">${_fmt(_total)}</div>
-      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">
-        ${_basic>0?`<span style="background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:3px 9px;font-size:.72rem;color:#cbd5e1">الأساسي: ${_fmt(_basic)}</span>`:''}
-        ${_parts.map(p=>`<span style="background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:3px 9px;font-size:.72rem;color:#a0aec0">${p[0]}: ${_fmt(p[1])}</span>`).join('')}
-      </div>
-    </div>` : '';
+  const salaryBlock = _jsrSalaryHTML(e);
   let m = document.getElementById('jsrEmpModal');
   if(!m){ m=document.createElement('div'); m.id='jsrEmpModal'; document.body.appendChild(m); }
   m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
@@ -7204,11 +7214,30 @@ function jsrShowEmpDetails(code){
           style="background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#ef4444;border-radius:8px;padding:6px 12px;cursor:pointer;font-family:Cairo;font-size:.8rem">✕ إغلاق</button>
       </div>
       <div style="overflow-y:auto;padding:8px 20px 18px">
-        ${salaryBlock}${rows||'<div style="color:#6b7fa3;padding:20px;text-align:center">لا توجد تفاصيل إضافية</div>'}
+        <div id="empSalaryBlock">${salaryBlock}</div>${rows||'<div style="color:#6b7fa3;padding:20px;text-align:center">لا توجد تفاصيل إضافية</div>'}
       </div>
     </div>`;
   m.style.display='flex';
   m.onclick=ev=>{ if(ev.target===m) m.style.display='none'; };
+  // اجلب سجل الموظف المفصّل (قد يحتوي الراتب الكامل غير الموجود في القائمة) وحدّث كتلة الراتب
+  (async()=>{
+    try{
+      const id = e.id||e.uuid||e.employee_id||e.code;
+      if(id==null) return;
+      let det=null;
+      for(const path of ['/employees/'+encodeURIComponent(id), '/employees/'+encodeURIComponent(id)+'/financial', '/employees/'+encodeURIComponent(id)+'/salary']){
+        try{ const d=await jsrFetch(path); if(d){ det=d; break; } }catch(_){}
+      }
+      if(!det) return;
+      const obj = Array.isArray(det)?det[0]:det;
+      if(obj && typeof obj==='object'){
+        const merged = Object.assign({}, e, obj);
+        const html = _jsrSalaryHTML(merged);
+        const el = document.getElementById('empSalaryBlock');
+        if(el && html) el.innerHTML = html;
+      }
+    }catch(_){}
+  })();
 }
 
 function renderJisr(){
