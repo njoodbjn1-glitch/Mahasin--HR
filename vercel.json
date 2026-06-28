@@ -1,0 +1,5 @@
+{
+  "functions": {
+    "api/jisr-proxy.js": { "maxDuration": 30 }
+  }
+}
