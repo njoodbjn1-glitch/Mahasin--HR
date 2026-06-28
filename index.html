@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>محاسن — الموارد البشرية</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0f14;--s1:#161b25;--s2:#1e2535;--s3:#252d40;
+  --bd:#2a3450;--tx:#e8eaf0;--mu:#6b7fa3;
+  --ac:#4f7cff;--gn:#22c55e;--rd:#ef4444;--gd:#f5c842;--r:13px;
+}
+body{background:var(--bg);color:var(--tx);font-family:'Cairo',sans-serif;min-height:100vh;direction:rtl}
+.hdr{background:linear-gradient(135deg,#0d1929,#0a1f3d,#0d1929);border-bottom:1px solid var(--bd);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:46px;height:46px;border-radius:11px;background:linear-gradient(135deg,#4f7cff,#a855f7);display:flex;align-items:center;justify-content:center;font-size:22px}
+.bn{font-size:19px;font-weight:800}
+.bs{font-size:11px;color:var(--mu)}
+.wrap{padding:20px 24px;max-width:1300px;margin:0 auto}
+.bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.btn{background:var(--s2);border:1px solid var(--bd);color:var(--tx);font-family:'Cairo';font-size:13px;font-weight:700;padding:8px 14px;border-radius:9px;cursor:pointer;transition:all .2s}
+.btn:hover{border-color:var(--ac)}
+.btn.p{background:var(--ac);border-color:var(--ac);color:#fff}
+input[type=date],input.search{background:var(--s2);border:1px solid var(--bd);color:var(--tx);font-family:'Cairo';font-size:13px;padding:8px 12px;border-radius:9px;outline:none;color-scheme:dark}
+.kg{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:22px}
+.kc{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:16px 18px;position:relative;overflow:hidden}
+.kc::before{content:'';position:absolute;top:0;right:0;left:0;height:3px;background:var(--kc,var(--ac))}
+.kl{font-size:11px;color:var(--mu);font-weight:700;margin-bottom:8px}
+.kv{font-size:26px;font-weight:800;line-height:1}
+.ks{font-size:11px;color:var(--mu);margin-top:6px}
+.tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.tab{background:var(--s2);border:1px solid var(--bd);color:var(--mu);font-family:'Cairo';font-size:13px;font-weight:700;padding:9px 18px;border-radius:10px;cursor:pointer;transition:all .2s}
+.tab.active{background:var(--ac);border-color:var(--ac);color:#fff}
+.card{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:18px}
+.sec-title{font-size:15px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:780px){.two{grid-template-columns:1fr}}
+.emp{display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--s2);border:1px solid var(--bd);border-radius:10px;margin-bottom:8px}
+.av{width:38px;height:38px;border-radius:50%;background:rgba(79,124,255,.15);border:1px solid rgba(79,124,255,.35);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;flex-shrink:0;color:#9db4ff}
+.en{font-size:14px;font-weight:700}
+.et{font-size:11px;color:var(--mu);margin-top:2px}
+.badge{border-radius:6px;padding:3px 9px;font-size:11px;font-weight:700}
+.time{font-size:14px;font-weight:800;color:var(--gn)}
+table{width:100%;border-collapse:collapse}
+th{background:var(--s2);color:var(--mu);font-size:11px;font-weight:700;padding:10px 12px;text-align:right;border-bottom:1px solid var(--bd);position:sticky;top:0}
+td{padding:10px 12px;border-bottom:1px solid rgba(42,52,80,.5);font-size:13px}
+tr:hover td{background:rgba(255,255,255,.02)}
+.status-msg{color:var(--mu);font-size:12px}
+.empty{color:var(--mu);font-size:13px;padding:18px;text-align:center}
+/* بوابة الدخول */
+#lock{position:fixed;inset:0;background:#0a0d13;z-index:9999;display:flex;align-items:center;justify-content:center}
+.lockcard{background:var(--s1);border:1px solid var(--bd);border-radius:18px;padding:38px 34px;text-align:center;width:340px;max-width:90vw}
+.lockcard input{width:100%;background:var(--s2);border:1px solid var(--bd);color:var(--tx);font-family:'Cairo';font-size:18px;text-align:center;letter-spacing:4px;padding:12px;border-radius:10px;outline:none;margin-bottom:16px}
+.lockcard .err{color:var(--rd);font-size:12px;min-height:16px;margin-bottom:10px}
+</style>
+</head>
+<body>
+
+<!-- بوابة الدخول -->
+<div id="lock">
+  <div class="lockcard">
+    <div class="logo" style="margin:0 auto 16px">🔐</div>
+    <div style="font-size:18px;font-weight:800;margin-bottom:6px">محاسن — الموارد البشرية</div>
+    <div style="font-size:12px;color:var(--mu);margin-bottom:24px">أدخل رمز الدخول للمتابعة</div>
+    <input id="lockInput" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')lockCheck()">
+    <div class="err" id="lockErr"></div>
+    <button class="btn p" style="width:100%;padding:11px" onclick="lockCheck()">🔓 دخول</button>
+  </div>
+</div>
+
+<div class="hdr">
+  <div class="brand">
+    <div class="logo">🏢</div>
+    <div>
+      <div class="bn">محاسن — الموارد البشرية</div>
+      <div class="bs">جسر · Jisr HR · الحضور والموظفون</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span class="status-msg" id="jsrStatus">—</span>
+    <button class="btn p" onclick="refreshAll()"><span id="refIco">🔄</span> تحديث</button>
+  </div>
+</div>
+
+<div class="wrap" id="app" style="display:none">
+  <div class="bar">
+    <label class="status-msg">📅 تاريخ الحضور:</label>
+    <input type="date" id="attDate" onchange="loadAttendanceAndRender()">
+    <button class="btn" onclick="setToday()">اليوم</button>
+  </div>
+
+  <div class="kg" id="kpis"></div>
+
+  <div class="tabs">
+    <div class="tab active" id="tab_att" onclick="switchTab('att')">🟢 الحضور اليومي</div>
+    <div class="tab" id="tab_emp" onclick="switchTab('emp')">👥 الموظفون</div>
+  </div>
+
+  <div id="view_att">
+    <div class="two">
+      <div class="card">
+        <div class="sec-title">✅ الحاضرون <span class="status-msg" id="presentCount"></span></div>
+        <div id="presentList"><div class="empty">…</div></div>
+      </div>
+      <div class="card">
+        <div class="sec-title">⚠️ الغائبون <span class="status-msg" id="absentCount"></span></div>
+        <div id="absentList"><div class="empty">…</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="view_emp" style="display:none">
+    <div class="card">
+      <div class="sec-title" style="justify-content:space-between">
+        <span>👥 قائمة الموظفين <span class="status-msg" id="empCount"></span></span>
+        <input class="search" id="empSearch" placeholder="🔍 بحث بالاسم أو الكود…" oninput="renderEmployees()" style="max-width:280px">
+      </div>
+      <div style="overflow:auto;max-height:64vh">
+        <table id="empTable"><tbody></tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ════ بوابة الدخول ════ */
+const LOCK_KEY='mhs_hr_unlocked';
+function lockCheck(){
+  const v=(document.getElementById('lockInput').value||'').trim();
+  if(v==='SM@300'){ sessionStorage.setItem(LOCK_KEY,'1'); unlock(); }
+  else { document.getElementById('lockErr').textContent='رمز غير صحيح'; document.getElementById('lockInput').value=''; }
+}
+function unlock(){
+  document.getElementById('lock').style.display='none';
+  document.getElementById('app').style.display='block';
+  init();
+}
+
+/* ════ إعداد جسر (نفس بيانات الداشبورد الرئيسي) ════ */
+const JISR_KEY='KEaoHLufqy0YDiuaedx16g';
+const JISR_SECRET='1iJYpQt5YEkumG6hKJiLhw';
+const JISR_BASE='/api/jisr-proxy';
+const JISR_SLUG='samal-co';
+const JISR_TOKEN_DEFAULT='eyJhbGciOiJIUzI1NiJ9.eyJvcmdhbml6YXRpb25faWRlbnRpZmllciI6MTAwNjg4MCwiYXBpX2tleV9pZCI6MjYxOSwic291cmNlIjoib3Blbl9hcGkiLCJzb3VyY2VfaWQiOm51bGwsImlhdCI6MTc3OTU0NTQ0MiwiZXhwIjoxNzgyMTM3NDQyfQ.KKYm8t46QoV2pfnzIjW7xRJ5BcvtZWuU_SSyiFIv1CA';
+let jsrToken = localStorage.getItem('jisr_token')||JISR_TOKEN_DEFAULT;
+
+function _jsrTokenExpired(tok){
+  try{
+    const parts=String(tok||'').split('.'); if(parts.length<2) return false;
+    const payload=JSON.parse(decodeURIComponent(escape(atob(parts[1].replace(/-/g,'+').replace(/_/g,'/')))));
+    if(payload&&payload.exp) return (payload.exp*1000)<=(Date.now()+60000);
+  }catch(e){}
+  return false;
+}
+async function jsrGetToken(){
+  if(jsrToken&&_jsrTokenExpired(jsrToken)){ jsrToken=null; try{localStorage.removeItem('jisr_token');}catch(e){} }
+  if(jsrToken) return jsrToken;
+  const authHeaders={'Content-Type':'application/json','Accept':'application/json','api-version':'1','slug':JISR_SLUG,'api-key':JISR_KEY,'secret':JISR_SECRET,'source':'open_api'};
+  for(const ep of ['/auth','/sessions']){
+    try{
+      const r=await fetch(JISR_BASE+'?p='+encodeURIComponent(ep),{method:'POST',headers:authHeaders});
+      const txt=await r.text(); let j; try{j=JSON.parse(txt);}catch(e){j=null;}
+      const tok=(typeof j?.data==='string'?j.data:null)||j?.access_token||j?.token||j?.data?.access_token||j?.data?.token;
+      if(tok){ jsrToken=tok; localStorage.setItem('jisr_token',tok); return jsrToken; }
+    }catch(e){}
+  }
+  throw new Error('تعذّرت مصادقة جسر');
+}
+async function jsrHeaders(){
+  const token=await jsrGetToken();
+  return {'Content-Type':'application/json','Accept':'application/json','api-version':'1','Slug':JISR_SLUG,'Access-Token':token,'source':'open_api'};
+}
+async function jsrFetchRaw(path,params='',_retried){
+  const url=JISR_BASE+'?p='+encodeURIComponent(path)+(params?'&'+params:'');
+  let res,txt,j;
+  try{ res=await fetch(url,{headers:await jsrHeaders()}); }catch(netErr){ throw new Error('شبكة: '+netErr.message); }
+  txt=await res.text().catch(()=>''); try{ j=JSON.parse(txt); }catch(e){ j=null; }
+  if(!_retried && (res.status===401 || /logged out|log in again/i.test(txt))){
+    jsrToken=null; try{localStorage.removeItem('jisr_token');}catch(e){}
+    await jsrGetToken(); return jsrFetchRaw(path,params,true);
+  }
+  if(!res.ok) throw new Error('HTTP '+res.status+' '+path);
+  return j;
+}
+async function jsrFetch(path,params=''){
+  const j=await jsrFetchRaw(path,params); if(!j) throw new Error('رد غير صالح');
+  const d=j.data;
+  if(d&&typeof d==='object'&&!Array.isArray(d)) return d.employees??d.punches??d.records??d.attendance_logs??d;
+  return d??j.employees??j.punches??j;
+}
+
+/* ════ البيانات ════ */
+let HR={ employees:[], punches:[] };
+const todayRiyadh=()=>new Date(Date.now()+3*3600000).toISOString().slice(0,10);
+const empName=e=>(e?.full_name_ar||e?.full_name_en||e?.full_name||e?.name_ar||e?.name_en||e?.name||'—').toString().trim();
+const empCode=e=>(e?.code||e?.employee_code||e?.id||e?.employee_id||'').toString();
+const jobTitle=e=>(e?.job_title&&(e.job_title.name_ar||e.job_title.name_en))||e?.position||'—';
+const deptName=e=>(e?.department&&(e.department.name_ar||e.department.name_en))||'—';
+const isActive=e=>(e?.is_active||e?.status==='active');
+const fmtTime=ms=>{ try{ return new Date(ms).toLocaleTimeString('en-GB',{timeZone:'Asia/Riyadh',hour:'2-digit',minute:'2-digit'}); }catch(e){ return '—'; } };
+
+async function loadEmployees(){
+  const e=await jsrFetch('/employees');
+  HR.employees=Array.isArray(e)?e:[];
+}
+async function loadAttendance(dateStr){
+  const all=[]; let page=1,totalPages=1;
+  do{
+    const params=`status=success&from=${encodeURIComponent(dateStr+' 00:00:00')}&to=${encodeURIComponent(dateStr+' 23:59:59')}&page=${page}&limit=100`;
+    let j; try{ j=await jsrFetchRaw('/attendance_logs',params); }catch(e){ break; }
+    const punches=j?.data?.punches||j?.punches||[];
+    if(Array.isArray(punches)) all.push(...punches);
+    totalPages=j?.data?.pagination?.total_pages||1; page++;
+  }while(page<=totalPages&&page<=50);
+  HR.punches=all;
+}
+
+/* ════ الحساب والعرض ════ */
+function computeAttendance(){
+  const attendedCodes=new Set(), firstPunch={};
+  HR.punches.forEach(p=>{
+    const code=(p?.employee_code||p?.employee?.code||p?.employee_id||p?.employee?.id||'').toString();
+    if(code) attendedCodes.add(code);
+    const t=new Date(p?.punch_time||p?.time||p?.timestamp||p?.created_at).getTime();
+    if(code&&!isNaN(t)&&(firstPunch[code]===undefined||t<firstPunch[code])) firstPunch[code]=t;
+  });
+  const present=[],absent=[];
+  HR.employees.forEach(e=>{
+    const nm=empName(e); if(nm==='—') return;
+    const cd=empCode(e);
+    if(attendedCodes.has(cd)) present.push({name:nm,code:cd,title:jobTitle(e),checkin:firstPunch[cd]!=null?fmtTime(firstPunch[cd]):'—'});
+    else absent.push({name:nm,code:cd,title:jobTitle(e)});
+  });
+  present.sort((a,b)=>(a.checkin||'').localeCompare(b.checkin||''));
+  absent.sort((a,b)=>a.name.localeCompare(b.name,'ar'));
+  return {present,absent,attendedCount:attendedCodes.size};
+}
+
+function renderKPIs(){
+  const {present,absent}=computeAttendance();
+  const total=HR.employees.length;
+  const pct=total>0?Math.floor(present.length/total*100):0;
+  const card=(lbl,val,sub,col)=>`<div class="kc" style="--kc:${col}"><div class="kl">${lbl}</div><div class="kv">${val}</div><div class="ks">${sub}</div></div>`;
+  document.getElementById('kpis').innerHTML=[
+    card('👥 عدد الموظفين',total,'إجمالي المسجّلين','#4f7cff'),
+    card('✅ الحاضرون اليوم',present.length,'سجّلوا بصمة','#22c55e'),
+    card('⚠️ الغائبون',absent.length,'لم يسجّلوا','#ef4444'),
+    card('📊 نسبة الحضور',pct+'%','من الإجمالي','#f5c842'),
+  ].join('');
+}
+
+function avatar(nm){ return `<div class="av">${(nm||'؟')[0]}</div>`; }
+
+function renderAttendance(){
+  const {present,absent}=computeAttendance();
+  document.getElementById('presentCount').textContent='('+present.length+')';
+  document.getElementById('absentCount').textContent='('+absent.length+')';
+  const pl=document.getElementById('presentList'), al=document.getElementById('absentList');
+  pl.innerHTML=present.length?present.map(e=>`
+    <div class="emp">${avatar(e.name)}
+      <div style="flex:1;min-width:0"><div class="en">${e.name}</div><div class="et">${e.title}</div></div>
+      <div style="text-align:left"><div class="time">⏰ ${e.checkin}</div></div>
+    </div>`).join(''):'<div class="empty">لا يوجد حضور مسجّل لهذا اليوم</div>';
+  al.innerHTML=absent.length?absent.map(e=>`
+    <div class="emp">${avatar(e.name)}
+      <div style="flex:1;min-width:0"><div class="en">${e.name}</div><div class="et">${e.title}</div></div>
+      <span class="badge" style="background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3)">غائب</span>
+    </div>`).join(''):'<div class="empty">الجميع حاضر 🎉</div>';
+}
+
+function renderEmployees(){
+  const q=(document.getElementById('empSearch').value||'').trim().toLowerCase();
+  let list=HR.employees.slice();
+  if(q) list=list.filter(e=>(empName(e).toLowerCase().includes(q))||(empCode(e).toLowerCase().includes(q)));
+  list.sort((a,b)=>empName(a).localeCompare(empName(b),'ar'));
+  document.getElementById('empCount').textContent='('+list.length+')';
+  const rows=list.map(e=>`<tr>
+    <td style="font-weight:700">${empName(e)}</td>
+    <td style="color:var(--mu)">${jobTitle(e)}</td>
+    <td style="color:var(--mu)">${deptName(e)}</td>
+    <td style="color:#818cf8">${empCode(e)||'—'}</td>
+    <td>${isActive(e)?'<span class="badge" style="background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.3)">نشط</span>':'<span class="badge" style="background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3)">غير نشط</span>'}</td>
+  </tr>`).join('');
+  document.getElementById('empTable').innerHTML=`<thead><tr><th>الاسم</th><th>المسمّى</th><th>القسم</th><th>الكود</th><th>الحالة</th></tr></thead><tbody>${rows||'<tr><td colspan="5" class="empty">لا نتائج</td></tr>'}</tbody>`;
+}
+
+/* ════ تبويبات ════ */
+function switchTab(t){
+  document.getElementById('tab_att').classList.toggle('active',t==='att');
+  document.getElementById('tab_emp').classList.toggle('active',t==='emp');
+  document.getElementById('view_att').style.display=t==='att'?'block':'none';
+  document.getElementById('view_emp').style.display=t==='emp'?'block':'none';
+}
+
+/* ════ تحميل ════ */
+function setStatus(txt){ document.getElementById('jsrStatus').innerHTML=txt; }
+function setToday(){ document.getElementById('attDate').value=todayRiyadh(); loadAttendanceAndRender(); }
+
+async function loadAttendanceAndRender(){
+  const d=document.getElementById('attDate').value||todayRiyadh();
+  setStatus('⏳ جاري تحميل الحضور…');
+  try{ await loadAttendance(d); renderKPIs(); renderAttendance(); setStatus('✅ '+d); }
+  catch(e){ setStatus('❌ '+e.message); }
+}
+
+async function refreshAll(){
+  const ico=document.getElementById('refIco'); if(ico) ico.textContent='⏳';
+  setStatus('⏳ جاري التحميل…');
+  try{
+    await loadEmployees();
+    await loadAttendance(document.getElementById('attDate').value||todayRiyadh());
+    renderKPIs(); renderAttendance(); renderEmployees();
+    setStatus('✅ '+(document.getElementById('attDate').value||todayRiyadh()));
+  }catch(e){ setStatus('❌ '+e.message); }
+  finally{ if(ico) ico.textContent='🔄'; }
+}
+
+function init(){
+  document.getElementById('attDate').value=todayRiyadh();
+  refreshAll();
+}
+
+/* فتح تلقائي لو سبق الدخول في الجلسة */
+if(sessionStorage.getItem(LOCK_KEY)==='1'){ unlock(); }
+else { setTimeout(()=>{ const i=document.getElementById('lockInput'); if(i) i.focus(); },200); }
+</script>
+</body>
+</html>
