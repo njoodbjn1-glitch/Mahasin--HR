@@ -129,7 +129,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
 const LOCK_KEY='mhs_hr_unlocked';
 function lockCheck(){
   const v=(document.getElementById('lockInput').value||'').trim();
-  if(v==='SM@300'){ sessionStorage.setItem(LOCK_KEY,'1'); unlock(); }
+  if(v==='HR#R098'){ sessionStorage.setItem(LOCK_KEY,'1'); unlock(); }
   else { document.getElementById('lockErr').textContent='رمز غير صحيح'; document.getElementById('lockInput').value=''; }
 }
 function unlock(){
