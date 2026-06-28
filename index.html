@@ -7164,10 +7164,21 @@ function jsrShowEmpDetails(code){
   const name = e.full_name_ar||e.full_name_en||e.full_name||e.name_ar||e.name_en||'—';
   const titleTxt = (e.job_title&&(e.job_title.name_ar||e.job_title.name_en))||e.position||'';
   const deptTxt = (e.department&&(e.department.name_ar||e.department.name_en))||'';
-  // حساب إجمالي الراتب (الأساسي + بدل السكن + بدل النقل + بدلات أخرى)
+  // حساب إجمالي الراتب: الأساسي + كل البدلات (يلتقط أي حقل بدل تلقائياً)
   const _num = v => { if(v==null) return 0; const n=parseFloat(String(v).replace(/[^0-9.\-]/g,'')); return isNaN(n)?0:n; };
-  const _basic=_num(e.basic_salary), _housing=_num(e.housing_allowance), _transport=_num(e.transportation_allowance), _other=_num(e.other_allowance)+_num(e.other_allowances);
-  let _total=_num(e.total_salary)||_num(e.gross_salary); if(!_total) _total=_basic+_housing+_transport+_other;
+  const _lbl = { basic_salary:'الأساسي', housing_allowance:'بدل سكن', transportation_allowance:'بدل نقل', transport_allowance:'بدل نقل', food_allowance:'بدل طعام', mobile_allowance:'بدل جوال', phone_allowance:'بدل هاتف', other_allowance:'بدلات أخرى', other_allowances:'بدلات أخرى' };
+  const _basic = _num(e.basic_salary)||_num(e.basic)||_num(e.salary);
+  // اجمع كل حقول البدلات (أي مفتاح فيه allowance/بدل/سكن/نقل/طعام... بقيمة رقمية)
+  let _allow=0; const _parts=[];
+  Object.keys(e).forEach(k=>{
+    if(k==='basic_salary'||k==='basic'||k==='salary'||/total|gross|net/i.test(k)) return;
+    if(/allowance|housing|transport|earning|بدل|سكن|نقل|طعام|مواصلات/i.test(k)){
+      const v=_num(e[k]); if(v>0){ _allow+=v; _parts.push([_lbl[k]||k.replace(/_/g,' '), v]); }
+    }
+  });
+  // استخدم إجمالي جسر الجاهز إن وُجد، وإلا اجمع الأساسي + البدلات
+  let _total = _num(e.total_salary)||_num(e.gross_salary)||_num(e.net_salary)||_num(e.total_package)||_num(e.monthly_salary);
+  if(!_total) _total = _basic + _allow;
   const _fmt=n=>Math.round(n).toLocaleString('en-US')+' ر.س';
   const salaryBlock = _total>0 ? `
     <div style="background:linear-gradient(160deg,rgba(34,197,94,.12),rgba(34,197,94,.03));border:1px solid rgba(34,197,94,.4);border-radius:12px;padding:14px 16px;margin-bottom:14px">
@@ -7175,9 +7186,7 @@ function jsrShowEmpDetails(code){
       <div style="font-size:1.5rem;font-weight:800;color:#22c55e">${_fmt(_total)}</div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">
         ${_basic>0?`<span style="background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:3px 9px;font-size:.72rem;color:#cbd5e1">الأساسي: ${_fmt(_basic)}</span>`:''}
-        ${_housing>0?`<span style="background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:3px 9px;font-size:.72rem;color:#a0aec0">سكن: ${_fmt(_housing)}</span>`:''}
-        ${_transport>0?`<span style="background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:3px 9px;font-size:.72rem;color:#a0aec0">نقل: ${_fmt(_transport)}</span>`:''}
-        ${_other>0?`<span style="background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:3px 9px;font-size:.72rem;color:#a0aec0">بدلات أخرى: ${_fmt(_other)}</span>`:''}
+        ${_parts.map(p=>`<span style="background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:3px 9px;font-size:.72rem;color:#a0aec0">${p[0]}: ${_fmt(p[1])}</span>`).join('')}
       </div>
     </div>` : '';
   let m = document.getElementById('jsrEmpModal');
