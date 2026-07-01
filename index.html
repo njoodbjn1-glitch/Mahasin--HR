@@ -7408,9 +7408,9 @@ function renderJisr(){
   }
 
   if(jsrTab==='employees' || jsrTab==='terminated'){
-    // منتهي الخدمة: حالة منتهية/مستقيل/غير نشط، أو is_active=false، أو تاريخ إنهاء خدمة مضى
-    const _isTerm = x => (x.status==='terminated'||x.status==='resigned'||x.status==='inactive'||x.status==='suspended'||x.is_active===false||(x.terminate_date&&new Date(x.terminate_date)<=new Date()));
-    const emp = jsrTab==='terminated' ? jsrData.employees.filter(_isTerm) : jsrData.employees.filter(x=>!_isTerm(x));
+    // النشط = نفس منطق شارة الحالة (status='active' أو is_active=true)؛ والباقي منتهٍ/غير نشط
+    const _isActive = x => (x.status==='active' || x.is_active===true);
+    const emp = jsrTab==='terminated' ? jsrData.employees.filter(x=>!_isActive(x)) : jsrData.employees.filter(_isActive);
     if(!emp.length){ body.innerHTML=`<div style="color:#6b7fa3;padding:30px;text-align:center">${jsrTab==='terminated'?'لا يوجد موظفون منتهون':'لا توجد بيانات موظفين'}</div>`; return; }
     window._jsrEmpAll = emp;
     // فهرس كامل بالرقم الوظيفي لفتح كل التفاصيل عند الضغط
