@@ -7030,7 +7030,7 @@ async function fetchJisr(manual){
 
 function jsrSwitchTab(t){
   jsrTab = t;
-  ['employees','attendance','leaves','payroll'].forEach(k=>{
+  ['employees','terminated','attendance','leaves','payroll'].forEach(k=>{
     const b = document.getElementById('jsrTab_'+k);
     if(b){ b.style.background = k===t?'var(--ac)':'var(--s2)'; b.style.color = k===t?'#fff':'var(--mu)'; b.style.borderColor = k===t?'var(--ac)':'var(--bd)'; }
   });
@@ -7407,9 +7407,11 @@ function renderJisr(){
     mkChart('chartJoin','bar', joinSorted.map(d=>d[0]), joinSorted.map(d=>d[1]), PALETTE.slice(0,joinSorted.length));
   }
 
-  if(jsrTab==='employees'){
-    const emp = jsrData.employees;
-    if(!emp.length){ body.innerHTML=`<div style="color:#6b7fa3;padding:30px;text-align:center">لا توجد بيانات موظفين</div>`; return; }
+  if(jsrTab==='employees' || jsrTab==='terminated'){
+    // منتهي الخدمة: حالة منتهية/مستقيل/غير نشط، أو is_active=false، أو تاريخ إنهاء خدمة مضى
+    const _isTerm = x => (x.status==='terminated'||x.status==='resigned'||x.status==='inactive'||x.status==='suspended'||x.is_active===false||(x.terminate_date&&new Date(x.terminate_date)<=new Date()));
+    const emp = jsrTab==='terminated' ? jsrData.employees.filter(_isTerm) : jsrData.employees.filter(x=>!_isTerm(x));
+    if(!emp.length){ body.innerHTML=`<div style="color:#6b7fa3;padding:30px;text-align:center">${jsrTab==='terminated'?'لا يوجد موظفون منتهون':'لا توجد بيانات موظفين'}</div>`; return; }
     window._jsrEmpAll = emp;
     // فهرس كامل بالرقم الوظيفي لفتح كل التفاصيل عند الضغط
     window._jsrEmpFullByCode = {};
@@ -8357,7 +8359,9 @@ window.addEventListener('DOMContentLoaded', ()=>{
   <!-- Tabs -->
   <div style="display:flex;gap:8px;margin-bottom:16px;border-bottom:1px solid var(--bd);padding-bottom:0">
     <button id="jsrTab_employees"  onclick="jsrSwitchTab('employees')"
-      style="background:var(--ac);color:#fff;border:1px solid var(--ac);border-bottom:none;border-radius:8px 8px 0 0;padding:8px 18px;font-family:Cairo;font-size:.82rem;font-weight:700;cursor:pointer">👥 الموظفين</button>
+      style="background:var(--ac);color:#fff;border:1px solid var(--ac);border-bottom:none;border-radius:8px 8px 0 0;padding:8px 18px;font-family:Cairo;font-size:.82rem;font-weight:700;cursor:pointer">👥 الموظفين النشطين</button>
+    <button id="jsrTab_terminated" onclick="jsrSwitchTab('terminated')"
+      style="background:var(--s2);color:var(--mu);border:1px solid var(--bd);border-bottom:none;border-radius:8px 8px 0 0;padding:8px 18px;font-family:Cairo;font-size:.82rem;font-weight:700;cursor:pointer">🚪 الموظفين المنتهين</button>
     <button id="jsrTab_attendance" onclick="jsrSwitchTab('attendance')"
       style="background:var(--s2);color:var(--mu);border:1px solid var(--bd);border-bottom:none;border-radius:8px 8px 0 0;padding:8px 18px;font-family:Cairo;font-size:.82rem;font-weight:700;cursor:pointer">🕐 الحضور</button>
     <button id="jsrTab_leaves"     onclick="jsrSwitchTab('leaves')"
